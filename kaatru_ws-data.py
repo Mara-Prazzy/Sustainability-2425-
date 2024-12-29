@@ -10,7 +10,7 @@ logger = logging.getLogger()
 
 # Initialize S3 client
 s3 = boto3.client('s3')
-BUCKET_NAME = 'websocket-stream-data'  # Replace with your S3 bucket name
+BUCKET_NAME = 'tmu-sustainability'
 
 def save_to_s3(data):
     """Save data to S3 bucket."""
@@ -52,7 +52,7 @@ def on_error(ws, error):
 
 def lambda_handler(event, context):
     """AWS Lambda entry point."""
-    websocket_url = "wss://bw06.kaatru.org/stream/prod/gur/SA/sen"  # Replace with your WebSocket URL
+    websocket_url = "wss://bw06.kaatru.org/stream/prod/gur/SA/sen"
     ws = websocket.WebSocketApp(
         websocket_url,
         on_open=on_open,

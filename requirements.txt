@@ -1,5 +1,2 @@
 boto3
-websocket
-json
-datetime
-logging
+websocket-client
