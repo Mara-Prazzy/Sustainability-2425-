@@ -2,6 +2,7 @@ import boto3
 import websocket
 import json
 import datetime
+import time
 import logging
 
 # Configure logging
@@ -11,6 +12,9 @@ logger = logging.getLogger()
 # Initialize S3 client
 s3 = boto3.client('s3')
 BUCKET_NAME = 'tmu-sustainability'
+
+# Track the last processed timestamp
+last_processed_time = 0  # Global variable to track last processed time
 
 def save_to_s3(data):
     """Save data to S3 bucket."""
@@ -35,10 +39,17 @@ def on_open(ws):
 
 def on_message(ws, message):
     """WebSocket on_message callback."""
+    global last_processed_time
     try:
-        data = json.loads(message)  # Parse the WebSocket message
-        logger.info(f"Received data: {data}")
-        save_to_s3(data)  # Save the parsed data to S3
+        current_time = time.time()
+        # Process data only every 5 seconds
+        if current_time - last_processed_time >= 5:
+            data = json.loads(message)  # Parse the WebSocket message
+            logger.info(f"Processing data at {time.ctime(current_time)}: {data}")
+            save_to_s3(data)  # Save the parsed data to S3
+            last_processed_time = current_time  # Update last processed time
+        else:
+            logger.info("Skipping data processing to maintain 5-second interval")
     except Exception as e:
         logger.error(f"Failed to process message: {e}")
 
