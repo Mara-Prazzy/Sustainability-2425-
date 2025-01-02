@@ -73,6 +73,7 @@ def lambda_handler(event, context):
     )
     try:
         # Run the WebSocket connection
-        ws.run_forever()
+        #ws.run_forever()
+        ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
     except Exception as e:
         logger.error(f"Failed to run WebSocket client: {e}")
